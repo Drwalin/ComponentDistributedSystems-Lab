@@ -1,6 +1,8 @@
 
 #include "MyClass.hpp"
 
+#include <fstream>
+
 
 std::atomic<uint64_t> global_counter;
 
@@ -128,31 +130,67 @@ HRESULT STDMETHODCALLTYPE MyClassFactory::CreateInstance(IUnknown *outer, REFIID
 
 
 
+template<typename T>
+void DEBUG(T args, const char*n="\n") {
+	std::ofstream file("C:\\Studies\\sem6\\ksr\\ksr-lab\\lab1-COM-1-cpp\\dll.log",
+			std::ios::out | std::ios::app);
+	file << args << n;
+}
 
 
 extern "C" HRESULT __stdcall DllGetClassObject(REFCLSID cls, REFIID iid, void **ptr) {
-	if(ptr == NULL)
+	DEBUG(__LINE__);
+	if(ptr == NULL) {
+	DEBUG(__LINE__);
 		return E_INVALIDARG;
+	}
 	*ptr = NULL;
+	DEBUG(__LINE__);
 
-	if(cls != myclassguid)
+	DEBUG(__LINE__);
+	if(cls != myclassguid) {
+	DEBUG(__LINE__);
 		return CLASS_E_CLASSNOTAVAILABLE;
-	if(iid != IID_IUnknown && iid != IID_IClassFactory)
+	}
+	
+	DEBUG(__LINE__);
+	if(iid != IID_IUnknown && iid != IID_IClassFactory) {
+	DEBUG(__LINE__);
 		return E_NOINTERFACE;
+	}
 
+	DEBUG(__LINE__);
 	MyClassFactory *factory = new MyClassFactory();
-	if(factory == NULL)
+	DEBUG(__LINE__);
+	if(factory == NULL) {
+	DEBUG(__LINE__);
 		return E_OUTOFMEMORY;
+	}
+	DEBUG(__LINE__);
 
 	HRESULT res = factory->QueryInterface(iid, ptr);
+	DEBUG(__LINE__);
 	if(FAILED(res)) {
+	DEBUG(__LINE__);
 		delete factory;
 		*ptr = NULL;
 	};
+	DEBUG(__LINE__);
 	return res;
 };
 
 
 extern "C" HRESULT __stdcall DllCanUnloadNow() {
 	return global_counter > 0 ? S_FALSE : S_OK;
+};
+
+extern "C" BOOL WINAPI DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
+	switch (ul_reason_for_call) {
+	case DLL_PROCESS_ATTACH:
+	case DLL_THREAD_ATTACH:
+	case DLL_THREAD_DETACH:
+	case DLL_PROCESS_DETACH:
+		break;
+	};
+	return TRUE;
 };
