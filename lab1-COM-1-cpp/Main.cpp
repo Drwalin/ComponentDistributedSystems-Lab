@@ -12,7 +12,7 @@ bool CHECK(HRESULT res) {
 }
 
 int main() {
-	printf("\n running\n");
+	printf("\n running: %s\n", __FUNCTION__);
 	fflush(stdout);
 	
 	if(CHECK(CoInitializeEx(NULL, COINIT_APARTMENTTHREADED))) {
@@ -23,7 +23,13 @@ int main() {
 				object->SetB(-2);
 				object->SetC(-100);
 				float y = object->CalculateFunction(5);
-				printf(" Expected: %f, received: %f\n", 2*5*5-2*5-100, y);
+				printf(" Expected: %f, received: %f\n", (float)(2*5*5 -2*5 -100), y);
+				
+				object->SetA(1);
+				object->SetB(2);
+				object->SetC(3);
+				y = object->CalculateFunction(7);
+				printf(" Expected: %f, received: %f\n", (float)(1*7*7 + 2*7 + 3), y);
 				object->Release();
 		} else {
 			printf(" err 1\n");

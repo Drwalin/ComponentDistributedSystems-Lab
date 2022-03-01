@@ -12,14 +12,14 @@ public:
 	MyClass();
 	~MyClass();
 	
-	virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID id, void **ptr);
-	virtual ULONG STDMETHODCALLTYPE AddRef();
-	virtual ULONG STDMETHODCALLTYPE Release();
+	virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID id, void **ptr) override;
+	virtual ULONG STDMETHODCALLTYPE AddRef() override;
+	virtual ULONG STDMETHODCALLTYPE Release() override;
 	
-    float CalculateFunction(float x);
-	float SetA(float value);
-	float SetB(float value);
-	float SetC(float value);
+    virtual float CalculateFunction(float x) override;
+	virtual float SetA(float value) override;
+	virtual float SetB(float value) override;
+	virtual float SetC(float value) override;
 	
 private:
 	
