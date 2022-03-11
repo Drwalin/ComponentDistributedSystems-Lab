@@ -1,0 +1,8 @@
+LIBRARY MyClass_i.dll
+
+EXPORTS
+DllCanUnloadNow
+DllGetClassObject
+DllRegisterServer
+DllUnregisterServer
+

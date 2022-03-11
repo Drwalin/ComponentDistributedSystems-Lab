@@ -1,0 +1,10 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Classes\Wow6432Node\CLSID\{AF4D385C-05D6-49AC-A6D2-EC5CF12673BB}]
+@="MyClass"
+
+[HKEY_CURRENT_USER\Software\Classes\Wow6432Node\CLSID\{AF4D385C-05D6-49AC-A6D2-EC5CF12673BB}\LocalServer32]
+@="C:\\Studies\\sem6\\ksr\\lab2\\learn\\server.exe"
+"ThreadingModel"="Both"
+"ServerExecutble"="C:\\Studies\\sem6\\ksr\\lab2\\learn\\server.exe"
+

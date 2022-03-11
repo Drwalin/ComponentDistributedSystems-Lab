@@ -1,0 +1,7 @@
+import "oaidl.idl";
+[object, uuid(00000002-3141-5926-5358-979323846264)]
+interface IInterface : IUnknown {
+	HRESULT Push(int value);
+	HRESULT Pop([out] int* value);
+	HRESULT Top([out] int* value);
+};
