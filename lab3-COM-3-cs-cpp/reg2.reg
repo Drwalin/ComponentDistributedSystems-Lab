@@ -1,0 +1,30 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Classes\KSR.Stos]
+@="KSR.Stos"
+
+[HKEY_CURRENT_USER\Software\Classes\KSR.Stos\CLSID]
+@="{27F10FA1-8215-4D14-B5F5-D6B850F49E5E}"
+
+[HKEY_CURRENT_USER\Software\Classes\Wow6432Node\CLSID\{27F10FA1-8215-4D14-B5F5-D6B850F49E5E}]
+@="KSR.Stos"
+
+[HKEY_CURRENT_USER\Software\Classes\Wow6432Node\CLSID\{27F10FA1-8215-4D14-B5F5-D6B850F49E5E}\InprocServer32]
+@="mscoree.dll"
+"ThreadingModel"="Both"
+"Class"="KSR.Stos"
+"Assembly"="Stos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+"RuntimeVersion"="v2.0.50727"
+"CodeBase"="file:///C:/Studies/sem6/ksr/lab/lab3-COM-3-cs-cpp/dllcs/bin/Release/net5.0/dllcs.dll"
+
+[HKEY_CURRENT_USER\Software\Classes\Wow6432Node\CLSID\{27F10FA1-8215-4D14-B5F5-D6B850F49E5E}\InprocServer32\1.0.0.0]
+"Class"="KSR.Stos"
+"Assembly"="Stos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+"RuntimeVersion"="v2.0.50727"
+"CodeBase"="file:///C:/Studies/sem6/ksr/lab/lab3-COM-3-cs-cpp/dllcs/bin/Release/net5.0/dllcs.dll"
+
+[HKEY_CURRENT_USER\Software\Classes\Wow6432Node\CLSID\{27F10FA1-8215-4D14-B5F5-D6B850F49E5E}\ProgId]
+@="KSR.Stos"
+
+[HKEY_CURRENT_USER\Software\Classes\Wow6432Node\CLSID\{27F10FA1-8215-4D14-B5F5-D6B850F49E5E}\Implemented Categories\{62C8FE65-4EBB-45E7-B440-6E39B2CDBF29}]
+

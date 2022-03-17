@@ -1,0 +1,9 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Classes\Wow6432Node\CLSID\{AF4D385C-05D6-49AC-A6D2-EC5CF12673BB}]
+@="MyClass"
+
+[HKEY_CURRENT_USER\Software\Classes\Wow6432Node\CLSID\{AF4D385C-05D6-49AC-A6D2-EC5CF12673BB}\InternalServer32]
+@="C:\\Studies\\sem6\\ksr\\lab\\lab3-COM-3-cs-cpp\\dllcs\\bin\\Debug\\net5.0\\dllcs.dll"
+"ThreadingModel"="Both"
+
