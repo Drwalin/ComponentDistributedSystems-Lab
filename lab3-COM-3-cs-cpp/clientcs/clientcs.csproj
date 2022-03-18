@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netstandard1.0</TargetFramework>
+    <TargetFramework>netframework4.7.2</TargetFramework>
 	<PlatformTargeet>x86</PlatformTargeet>
   </PropertyGroup>
 

@@ -1,20 +1,24 @@
 ﻿using System;
-using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Collections.Generic;
 
+[assembly:AssemblyKeyFileAttribute("keyfile.snk")]
 namespace KSR {
 	
 	[Guid("9EE6ED09-D4F1-4EF4-8126-ACF25675B29E"), ComVisible(true),
-		InterfaceType(ComInterfaceType.InterfaceIsDual)]
+		InterfaceType(ComInterfaceType.InterfaceIsDual)
+// 	,assembly:AssemblyKeyFile("keyfile.snk")
+	]
 	public interface IStos {
 		uint Push(int v);
 	}
 
 	
 	[Guid("27F10FA1-8215-4D14-B5F5-D6B850F49E5E"), ComVisible(true),
-		ClassInterface(ClassInterfaceType.None), ProgId("KSR.Stos.1")]
+		ClassInterface(ClassInterfaceType.None)//, ProgId("KSR.Stos.1")
+// 	, assembly:AssemblyKeyFile("keyfile.snk")
+	]
 	public class Stos : IStos {
 		public Stos() {
 		}
