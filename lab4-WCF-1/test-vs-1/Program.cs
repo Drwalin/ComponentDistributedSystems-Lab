@@ -7,26 +7,16 @@ using System.Runtime.Serialization;
 using KSR_WCF1;
 using System.ServiceModel;
 
-namespace server {
-}
-
 namespace test_vs_1 {
-
-	[DataContract]
-	public class Wyjatek7 {
-		[DataMember] string Opis { get; set; }
-		[DataMember] string A { get; set; }
-		[DataMember] int B { get; set; }
-	}
 
 	class Program {
 		static void Main(string[] args) {
 			{
-				var client7 = new ServiceReference4.Zadanie7Client();
+				var client7 = new ServiceReference5.Zadanie7Client();
 				try {
 					client7.RzucWyjatek7("Tekst", 4);
-				} catch {//(FaultException<Wyjatek7> e) {
-					Console.WriteLine("wyjatek 7");
+				} catch (FaultException<ServiceReference5.Wyjatek7> e) {
+					Console.WriteLine(e.Detail.A + " :: " + e.Detail.B);
 				}
 				((IDisposable)client7).Dispose();
 			}

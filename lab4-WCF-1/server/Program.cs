@@ -29,6 +29,11 @@ namespace server {
 
 	[DataContract]
 	public class Wyjatek7 {
+		public Wyjatek7(string o, string a, int b) {
+			Opis = o;
+			A = a;
+			B = b;
+		}
 		[DataMember] string Opis { get; set; } 
 		[DataMember] string A    { get; set; }
 		[DataMember] int B       { get; set; } 
@@ -36,7 +41,7 @@ namespace server {
 
 	public class Zadanie7 : IZadanie7 {
 		public void RzucWyjatek7(string a, int b) {
-			throw new FaultException<Wyjatek7>(new Wyjatek7(),
+			throw new FaultException<Wyjatek7>(new Wyjatek7(null, a, b),
 				new FaultReason("Wyjatek cos: " + a + "," + b));
 		}
 	}
