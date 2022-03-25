@@ -11,6 +11,7 @@ public:
 	virtual float SetA(float value) = 0;
 	virtual float SetB(float value) = 0;
 	virtual float SetC(float value) = 0;
+	virtual unsigned Test(wchar_t* test) = 0;
 };
 
 #endif

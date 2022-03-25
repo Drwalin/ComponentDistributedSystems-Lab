@@ -4,3 +4,11 @@
 *.a
 *.lib
 *.log
+/lab4-WCF-1/Lab4_Opracowanie.pdf
+/lab4-WCF-1/info.txt
+/lab4-WCF-1/test-vs-1/bin
+/lab4-WCF-1/test-vs-1/obj
+/lab4-WCF-1/test-vs-1/.vs
+/lab4-WCF-1/server/obj
+/lab4-WCF-1/server/.vs
+/lab4-WCF-1/server/bin

@@ -20,6 +20,7 @@ public:
 	virtual float SetA(float value) override;
 	virtual float SetB(float value) override;
 	virtual float SetC(float value) override;
+	virtual unsigned Test(wchar_t* test) override;
 	
 private:
 	

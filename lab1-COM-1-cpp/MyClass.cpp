@@ -22,6 +22,8 @@ std::string F(const char* s) {
 	return a.c_str() + a.find_first_of("_qwertyuiopasdfghjklmnbvcxzQWERTYUIOPLKJHGFDSAZXCVBNM");
 }
 
+
+
 //#define DEBUG(X) Debug(F(__PRETTY_FUNCTION__).c_str(), __FILE__, __LINE__, X)
 #define DEBUG(X)
 
@@ -65,6 +67,10 @@ float MyClass::SetB(float value) {
 float MyClass::SetC(float value) {
 	DEBUG(this);
 	return c = value;
+}
+
+unsigned MyClass::Test(wchar_t* test) {
+	wprintf(test);
 }
 
 
