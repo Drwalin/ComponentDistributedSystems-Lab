@@ -42,3 +42,4 @@ C:\Studies\sem6\ksr\lab\lab7-rabbitmq\Consumer\bin\Debug\System.Runtime.Compiler
 C:\Studies\sem6\ksr\lab\lab7-rabbitmq\Consumer\bin\Debug\System.Threading.Channels.xml
 C:\Studies\sem6\ksr\lab\lab7-rabbitmq\Consumer\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Studies\sem6\ksr\lab\lab7-rabbitmq\Consumer\obj\Debug\Client-dotnetframework.csproj.CopyComplete
+C:\Studies\sem6\ksr\lab\lab7-rabbitmq\Consumer\bin\Debug\RabbitMQ.ServiceModel.dll
