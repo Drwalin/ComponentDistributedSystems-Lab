@@ -28,19 +28,21 @@ namespace Client_dotnetframework {
 				prop.Headers.Add("mleko", 10);
 
 				channel.QueueDeclare("message_queue", false, false, false, null);
-				channel.QueueDeclare("response", false, false, false, null);
-
+				string replyQueueName = channel.QueueDeclare("", false, false, false, null).QueueName;
+				Console.WriteLine("Reply queue: " + replyQueueName);
 
 				var consumer = new EventingBasicConsumer(channel);
 				consumer.Received += (model, ea) => {
 					var message = Encoding.UTF8.GetString(ea.Body.ToArray());
 
-					Console.WriteLine(pid + " odbiera odpowiedx: " + message);
+					Console.WriteLine(pid + " odbiera odpowiedz: " + message);
 					// show message
 				};
-				channel.BasicConsume("response", true, consumer);
+				channel.BasicConsume(replyQueueName, true, consumer);
 
-				for(int i=0; i<10; ++i) {
+				prop.Headers.Add("response", replyQueueName);
+
+				for(int i = 0; i < 10; ++i) {
 					var msg = pid + " wysyla wiadomosc " + i;
 					var bytes = Encoding.UTF8.GetBytes(pid + " wysyla wiadomosc " + i);
 					Console.WriteLine(msg);
@@ -50,6 +52,7 @@ namespace Client_dotnetframework {
 
 
 				Console.ReadKey();
+				channel.QueueDelete(replyQueueName);
 			}
 		}
 	}

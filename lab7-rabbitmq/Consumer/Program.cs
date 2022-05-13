@@ -21,7 +21,6 @@ namespace Client_dotnetframework {
 			using(var connection = factory.CreateConnection())
 			using(var channel = connection.CreateModel()) {
 				channel.QueueDeclare("message_queue", false, false, false, null);
-				channel.QueueDeclare("response", false, false, false, null);
 				
 				var consumer = new EventingBasicConsumer(channel);
 				consumer.Received += (model, ea) => {
@@ -29,16 +28,20 @@ namespace Client_dotnetframework {
 					var body = ea.Body;
 					var message = Encoding.UTF8.GetString(body.ToArray());
 
+					var respQueueName = Encoding.UTF8.GetString((byte[])h["response"]);
+
 					Console.WriteLine(pid + " odbiera: " + message + "   ``` headers: test: " + h["test"] + ", mleko: " + h["mleko"]);
 					Thread.Sleep(2000);
-					Console.WriteLine(pid + " odbiera: " + message + "   ``` wykonane");
+					Console.WriteLine(pid + " odbiera: " + message + "   ``` wykonane, wysyla odpowiedz do: " + respQueueName);
 
 					var msg = pid + " odpowiedz na: " + message;
 					var bytes = Encoding.UTF8.GetBytes(msg);
 					Console.WriteLine(msg);
-					channel.BasicPublish("", "response", null, bytes);
+
+
+					channel.BasicPublish("", respQueueName, null, bytes);
 				};
-				consumer.Model.BasicQos(0, 1, false);
+				consumer.Model.BasicQos(0, 3, false);
 				channel.BasicConsume("message_queue", true, consumer);
 
 				Console.ReadKey();

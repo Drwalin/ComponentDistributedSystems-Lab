@@ -42,6 +42,7 @@ C:\Studies\sem6\ksr\lab\lab7-rabbitmq\Consumer\bin\Debug\System.Runtime.Compiler
 C:\Studies\sem6\ksr\lab\lab7-rabbitmq\Consumer\bin\Debug\System.Threading.Channels.xml
 C:\Studies\sem6\ksr\lab\lab7-rabbitmq\Consumer\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Studies\sem6\ksr\lab\lab7-rabbitmq\Consumer\obj\Debug\Client-dotnetframework.csproj.CopyComplete
+<<<<<<< HEAD
 C:\Studies\sem6\ksr\ksr-lab\lab7-rabbitmq\Consumer\bin\Debug\Client-dotnetframework.exe.config
 C:\Studies\sem6\ksr\ksr-lab\lab7-rabbitmq\Consumer\bin\Debug\Client-dotnetframework.exe
 C:\Studies\sem6\ksr\ksr-lab\lab7-rabbitmq\Consumer\bin\Debug\Client-dotnetframework.pdb
@@ -64,3 +65,6 @@ C:\Studies\sem6\ksr\ksr-lab\lab7-rabbitmq\Consumer\obj\Debug\Client-dotnetframew
 C:\Studies\sem6\ksr\ksr-lab\lab7-rabbitmq\Consumer\obj\Debug\Client-dotnetframework.csproj.CopyComplete
 C:\Studies\sem6\ksr\ksr-lab\lab7-rabbitmq\Consumer\obj\Debug\Client-dotnetframework.exe
 C:\Studies\sem6\ksr\ksr-lab\lab7-rabbitmq\Consumer\obj\Debug\Client-dotnetframework.pdb
+=======
+C:\Studies\sem6\ksr\lab\lab7-rabbitmq\Consumer\bin\Debug\RabbitMQ.ServiceModel.dll
+>>>>>>> bf034677cf921885c88eded0c4684cd25c7c63fc
