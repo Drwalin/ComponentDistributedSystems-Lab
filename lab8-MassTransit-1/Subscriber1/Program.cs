@@ -27,7 +27,8 @@ namespace Publisher1 {
 						h.Password("HmuXDb9Jj-crT9SGJ2XCRV2yTqQZg5EU");
 					});
 				sbc.ReceiveEndpoint("Kolejka1", x => {
-					x.Consumer<Odbiorca>();
+					x.Instance(new Odbiorca());
+					//x.Consumer<Odbiorca>();
 					/*
 					x.Handler<IMessage>(ep => {
 						ep.Consumer<Odbiorca>();
