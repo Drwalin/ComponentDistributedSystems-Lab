@@ -1,0 +1,11 @@
+bin
+obj
+.vs
+csx
+ecf
+rcf
+Debug
+Release
+packages
+AppData
+App_Data
