@@ -6,103 +6,113 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace WCFServiceWebRole1 {
 	public class Service1 : IService1 {
-		public void Create(LoginData login) {
-			var account = CloudStorageAccount.DevelopmentStorageAccount;
-			CloudTableClient cl = account.CreateCloudTableClient();
-			var users = cl.GetTableReference("UserTable");
-			users.CreateIfNotExists();
+		public bool Create(string login, string password) {
+			var users = Table("users");
+
+            var a = TableOperation.Retrieve<Users>(login, password);
+            var res = users.Execute(a);
+			if(res.Result != null)
+				return false;
+
 			users.Execute(
-					TableOperation.Insert(
-						new UserTable(login.Login, "") {
-						UserName = login.Login,
-						Password = login.Password
-						}
-						)
-					);
+				TableOperation.Insert(
+					new Users(login, password) {
+						UserName = login,
+						Password = password
+					})
+				);
+			return true;
 		}
 
-		public string Login(LoginData login) {
-			var account = CloudStorageAccount.DevelopmentStorageAccount;
-			CloudTableClient cl = account.CreateCloudTableClient();
-			var users = cl.GetTableReference("UserTable");
-			
+		public string Login(string login, string password) {
+			var users = Table("users");
+
 			var res = users.Execute(
-					TableOperation.Retrieve<UserTable>(login.Login, ""));
-			var e = (UserTable)res.Result;
+					TableOperation.Retrieve<Users>(login, password));
+			var e = res.Result as Users;
 			if(e == null)
 				return null;
-			
-			if(e.Password != login.Password)
+
+			if(e.Password != password)
 				return null;
-			
-			var sessions = cl.GetTableReference("SessionTable");
+
+			var sessions = Table("sessions");
 			Guid id = Guid.NewGuid();
-			var session = new SessionTable(id.ToString(), "") {
-						UserName = login.Login,
-						SessionId = id
-						};
-			users.Execute(
+			var session = new Sessions(id.ToString(), "A") {
+				UserName = login,
+				SessionId = id
+			};
+			sessions.Execute(
 					TableOperation.Insert(session)
 					);
 			return id.ToString();
 		}
 
-		public void Logout(string sessionId) { 
-			var account = CloudStorageAccount.DevelopmentStorageAccount;
-			CloudTableClient cl = account.CreateCloudTableClient();
-			var sessions = cl.GetTableReference("SessionTable");
+		public void Logout(string sessionId) {
+			var sessions = Table("sessions");
 			var res = sessions.Execute(
-					TableOperation.Retrieve<SessionTable>(sessionId, ""));
-			var e = (SessionTable)res.Result;
+					TableOperation.Retrieve<Sessions>(sessionId, "A"));
+			var e = res.Result as Sessions;
 			if(e == null)
 				return;
-			
+
 			sessions.Execute(
 					TableOperation.Delete(e));
 		}
-		
 
-		public void Put(PutFileData data) {
-			var account = CloudStorageAccount.DevelopmentStorageAccount;
-			CloudTableClient cl = account.CreateCloudTableClient();
-			var sessions = cl.GetTableReference("SessionTable");
+
+		public bool Put(string fileName, string sessionId, string content) {
+			var sessions = Table("sessions");
 			var res = sessions.Execute(
-					TableOperation.Retrieve<SessionTable>(data.SessionId, ""));
-			var e = (SessionTable)res.Result;
+					TableOperation.Retrieve<Sessions>(sessionId, "A"));
+			var e = res.Result as Sessions;
 			if(e == null)
-				return;
+				return false;
 
-			var f = new FilesTable(e.UserName, data.FileName) { 
-				FileName = data.FileName,
-				UserName = e.UserName,
-				Content = data.Content
-			};
-			sessions.Execute(
-					TableOperation.Insert(f)
-					);
+			if(fileName.Contains("@"))
+				return false;
+
+			GetBlob("file", fileName + "@" + e.UserName).UploadTextAsync(content);
+			return true;
 		}
 
-		public string Get(GetFileData data) {
-			var account = CloudStorageAccount.DevelopmentStorageAccount;
-			CloudTableClient cl = account.CreateCloudTableClient();
-			var sessions = cl.GetTableReference("SessionTable");
+		public string Get(string fileName, string sessionId) {
+			var sessions = Table("sessions");
 			var res = sessions.Execute(
-					TableOperation.Retrieve<SessionTable>(data.SessionId, ""));
-			var e = (SessionTable)res.Result;
+					TableOperation.Retrieve<Sessions>(sessionId, "A"));
+			var e = res.Result as Sessions;
 			if(e == null)
 				return null;
 
-
-			var resf = sessions.Execute(
-					TableOperation.Retrieve<FilesTable>(e.UserName, data.FileName));
-			var f = (FilesTable)res.Result;
-			if(f == null)
+			if(fileName.Contains("@"))
 				return null;
-			return f.Content;
+
+			return GetBlob("file", fileName + "@" + e.UserName)?.DownloadText();
+		}
+
+
+
+		private CloudTable Table(string tableName) {
+			var table = CloudStorageAccount
+                .DevelopmentStorageAccount
+                .CreateCloudTableClient()
+                .GetTableReference(tableName);
+			table.CreateIfNotExists();
+			return table;
+		}
+
+		private CloudBlockBlob GetBlob(string containerName, string name) {
+			CloudBlobContainer container = CloudStorageAccount
+                .DevelopmentStorageAccount
+                .CreateCloudBlobClient()
+                .GetContainerReference(containerName);
+			container.CreateIfNotExists();
+			return container.GetBlockBlobReference(name);
 		}
 	}
 }

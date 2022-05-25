@@ -5,35 +5,24 @@ using System.Web;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace WCFServiceWebRole1 {
-	public class UserTable : TableEntity {
+	public class Users : TableEntity {
 		
-		public UserTable(string rk, string pk) {
-			this.PartitionKey = pk; // ustawiamy klucz partycji
-			this.RowKey = rk; // ustawiamy klucz główny
+		public Users(string pk, string rk) {
+			this.PartitionKey = pk;
+			this.RowKey = rk;
 		}
-		public UserTable() {}
+		public Users() {}
 		public string UserName { get; set; }
 		public string Password { get; set; }
 	}
 	
-	public class SessionTable : TableEntity {
-		public SessionTable(string rk, string pk) {
-			this.PartitionKey = pk; // ustawiamy klucz partycji
-			this.RowKey = rk; // ustawiamy klucz główny
+	public class Sessions : TableEntity {
+		public Sessions(string pk, string rk) {
+			this.PartitionKey = pk;
+			this.RowKey = rk;
 		}
-		public SessionTable() {}
+		public Sessions() {}
 		public string UserName { get; set; }
 		public Guid SessionId { get; set; }
-	}
-	
-	public class FilesTable : TableEntity {
-		public FilesTable(string rk, string pk) {
-			this.PartitionKey = pk; // ustawiamy klucz partycji
-			this.RowKey = rk; // ustawiamy klucz główny
-		}
-		public FilesTable() {}
-		public string UserName { get; set; }
-		public string FileName { get; set; }
-		public string Content { get; set; }
 	}
 }
