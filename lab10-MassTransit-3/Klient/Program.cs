@@ -90,29 +90,35 @@ namespace cli {
 
 	public class Klient : IConsumer<Messages.IPytanieoPotwierdzenie>, IConsumer<Messages.IAkceptacjaZamowienia>, IConsumer<Messages.IOdrzucenieZamowienia> {
 		public Task Consume(ConsumeContext<Messages.IPytanieoPotwierdzenie> ctx) {
+			if(ctx.Message.Login != Program.username)
+				return null;
 			Console.WriteLine("Czy potwierdzasz zamówienie o ilości: " + ctx.Message.Ilosc + " (Y/N)");
 			var c = Console.ReadKey();
 			if(c.KeyChar == 'y' || c.KeyChar == 'Y') {
 				ctx.RespondAsync(new Messages.Potwierdzenie() { CorrelationId = ctx.Message.CorrelationId });
-				return Console.Out.WriteLineAsync("Odrzucono zamowienie o ilosci: " + ctx.Message.Ilosc);
+				return Console.Out.WriteLineAsync("Klient zaakceptował o ilosci: " + ctx.Message.Ilosc);
 			} else {
 				ctx.RespondAsync(new Messages.BrakPotwierdzenia() { CorrelationId = ctx.Message.CorrelationId });
-				return Console.Out.WriteLineAsync("Odrzucono zamowienie o ilosci: " + ctx.Message.Ilosc);
+				return Console.Out.WriteLineAsync("Klient odrzucił o ilosci: " + ctx.Message.Ilosc);
 			}
 		}
 
 		public Task Consume(ConsumeContext<Messages.IAkceptacjaZamowienia> ctx) {
+			if(ctx.Message.Login != Program.username)
+				return null;
 			return Console.Out.WriteLineAsync("Udało się wykonać zamówienie o ilości: " + ctx.Message.Ilosc);
 		}
 
 		public Task Consume(ConsumeContext<Messages.IOdrzucenieZamowienia> ctx) {
+			if(ctx.Message.Login != Program.username)
+				return null;
 			return Console.Out.WriteLineAsync("Nie udało się wykonać zamówienie o ilości: " + ctx.Message.Ilosc);
 		}
 	}
 
 	class Program {
+		public static string username = "Klient" + new Random().Next().ToString();
 		static void Main(string[] args) {
-			string username = "Klient" + new Random().Next().ToString();
 			var bus = Bus.Factory.CreateUsingRabbitMq(sbc => {
 				sbc.Host(new Uri("rabbitmq://sparrow.rmq.cloudamqp.com/mapaayxd"),
 					h => {

@@ -89,6 +89,7 @@ namespace Messages {
 namespace mag {
 	public class Magazyn : IConsumer<Messages.IPytanieoWolne>, IConsumer<Messages.IAkceptacjaZamowienia>, IConsumer<Messages.IOdrzucenieZamowienia> {
 		public int wolne = 0, zarezerwowane = 0;
+		public HashSet<Guid> reservedTransactions = new HashSet<Guid>();
 		public Task Consume(ConsumeContext<Messages.IPytanieoWolne> ctx) {
 			if(ctx.Message.Ilosc > wolne) {
 				ctx.RespondAsync(new Messages.OdpowiedzWolneNegatywna() { CorrelationId = ctx.Message.CorrelationId });
@@ -96,19 +97,26 @@ namespace mag {
 			} else {
 				wolne -= ctx.Message.Ilosc;
 				zarezerwowane += ctx.Message.Ilosc;
+				reservedTransactions.Add(ctx.Message.CorrelationId);
 				ctx.RespondAsync(new Messages.OdpowiedzWolne() { CorrelationId = ctx.Message.CorrelationId });
 				return Print("OdpowiedzWolne: " + ctx.Message.Ilosc);
 			}
 		}
 
 		public Task Consume(ConsumeContext<Messages.IAkceptacjaZamowienia> ctx) {
-			zarezerwowane -= ctx.Message.Ilosc;
+			if(reservedTransactions.Contains(ctx.Message.CorrelationId)) {
+				zarezerwowane -= ctx.Message.Ilosc;
+				reservedTransactions.Remove(ctx.Message.CorrelationId);
+			}
 			return Print("IAkceptacjaZamowienia: " + ctx.Message.Ilosc);
 		}
 
 		public Task Consume(ConsumeContext<Messages.IOdrzucenieZamowienia> ctx) {
-			zarezerwowane -= ctx.Message.Ilosc;
-			wolne += ctx.Message.Ilosc;
+			if(reservedTransactions.Contains(ctx.Message.CorrelationId)) {
+				zarezerwowane -= ctx.Message.Ilosc;
+				wolne += ctx.Message.Ilosc;
+				reservedTransactions.Remove(ctx.Message.CorrelationId);
+			}
 			return Print("IOdrzucenieZamowienia: " + ctx.Message.Ilosc);
 		}
 

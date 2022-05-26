@@ -86,8 +86,6 @@ namespace Messages {
 }
 
 namespace Sklep {
-
-
 	public class RejestracjaZamowienie : SagaStateMachineInstance {
 		public RejestracjaZamowienie() {
 			CorrelationId = Guid.NewGuid();
@@ -120,76 +118,82 @@ namespace Sklep {
 						ctx => { Console.WriteLine("CorrelateBy: ctx.Message.Login"); return ctx.Message.Login; }
 					).SelectId(ctx => { Console.WriteLine("Getting new guid"); return Guid.NewGuid(); })
 				);
-
+			/*
 			Schedule(() => Timeout,
 					ctx => ctx.CorrelectionIdNullable,
 					ctx => { ctx.Delay = TimeSpan.FromSeconds(10); Console.WriteLine("schedule timeout"); }
 				);
+				*/
 
 			Initially(
 				When(StartZamowienia)
-				.Schedule(Timeout, ctx => { Console.WriteLine("Start zamowienie timeout");  return new Messages.Timeout() { CorrelationId = ctx.Saga.CorrelationId }; })
+				//.Schedule(Timeout, ctx => { Console.WriteLine("Start zamowienie timeout"); /*ctx.Publish(new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }); */return new Messages.Timeout() { CorrelationId = ctx.Saga.CorrelationId }; })
 				.Then(ctx => ctx.Saga.Login = ctx.Message.Login)
 				.Then(ctx => ctx.Saga.Ilosc = ctx.Message.Ilosc)
-				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"zamowienie w ilosci {ctx.Message.Ilosc}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.PytanieoPotwierdzenie() { CorrelationId = ctx.Saga.CorrelationId, Login = ctx.Saga.Login }; })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.PytanieoWolne() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc }; })
+				.Then(ctx => { Console.WriteLine($"zamowienie w ilosci {ctx.Message.Ilosc}"); })
+				.Respond(ctx => { Console.WriteLine("respond 1"); return new Messages.PytanieoPotwierdzenie() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
+				.Respond(ctx => { Console.WriteLine("respond 2"); return new Messages.PytanieoWolne() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc }; })
 				.TransitionTo(Niepotwierdzone)
 				);
 
 			During(Niepotwierdzone,
 				When(TimeoutEvent)
-				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"TIMEOUT: na zamowienie {ctx.Message.CorrelationId}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
+				.Then(ctx => { Console.WriteLine($"TIMEOUT: na zamowienie {ctx.Message.CorrelationId}"); })
+				.Respond(ctx => { Console.WriteLine("respond 3"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
+				//.Unschedule(Timeout)
 				.Finalize(),
 
 				When(Potwierdzenie)
-				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"potwierdzil zamowienie {ctx.Message.CorrelationId}"); })
-				.Unschedule(Timeout)
+				.Then(ctx => { Console.WriteLine($"potwierdzil zamowienie {ctx.Message.CorrelationId}"); })
+				//.Unschedule(Timeout)
 				.TransitionTo(PotwierdzoneKlient),
 
 				When(BrakPotwierdzenia)
-				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($" nie potwierdzil zamowienia {ctx.Message.CorrelationId}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
+				.Then(ctx => { Console.WriteLine($" nie potwierdzil zamowienia {ctx.Message.CorrelationId}"); })
+				.Respond(ctx => { Console.WriteLine("respond 4"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
+				//.Unschedule(Timeout)
 				.Finalize(),
 
 				When(OdpowiedzWolne)
-				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"Magazyn moze zrealizowac zamowienie {ctx.Message.CorrelationId}"); })
+				.Then(ctx => { Console.WriteLine($"Magazyn moze zrealizowac zamowienie {ctx.Message.CorrelationId}"); })
 				.TransitionTo(PotwierdzoneMagazyn),
 
 				When(OdpowiedzWolneNegatywna)
-				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"Magazyn nie moze zrealizowac zamowienia {ctx.Message.CorrelationId}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc }; })
+				.Then(ctx => { Console.WriteLine($"Magazyn nie moze zrealizowac zamowienia {ctx.Message.CorrelationId}"); })
+				.Respond(ctx => { Console.WriteLine("respond 5"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc }; })
+				//.Unschedule(Timeout)
 				.Finalize()
 				);
 
 			During(PotwierdzoneKlient,
 				When(OdpowiedzWolne)
-				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"Magazyn moze zrealizowac zamowienie {ctx.Message.CorrelationId}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.AkceptacjaZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc }; })
+				.Then(ctx => { Console.WriteLine($"Magazyn moze zrealizowac zamowienie {ctx.Message.CorrelationId}"); })
+				.Respond(ctx => { Console.WriteLine("respond 6"); return new Messages.AkceptacjaZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc }; })
 				.Finalize(),
 
 				When(OdpowiedzWolneNegatywna)
-				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"Magazyn nie moze zrealizowac zamowienia {ctx.Message.CorrelationId}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc }; })
+				.Then(ctx => { Console.WriteLine($"Magazyn nie moze zrealizowac zamowienia {ctx.Message.CorrelationId}"); })
+				.Respond(ctx => { Console.WriteLine("respond 7"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc }; })
 				.Finalize()
 				);
 
 			During(PotwierdzoneMagazyn,
 				When(TimeoutEvent)
-				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"TIMEOUT: na zamowienie {ctx.Message.CorrelationId}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
+				.Then(ctx => { Console.WriteLine($"TIMEOUT: na zamowienie {ctx.Message.CorrelationId}"); })
+				.Respond(ctx => { Console.WriteLine("respond 8"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
+				//.Unschedule(Timeout)
 				.Finalize(),
 
 				When(Potwierdzenie)
-				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"potwierdzil zamowienie {ctx.Message.CorrelationId}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.AkceptacjaZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
-				.Unschedule(Timeout)
+				.Then(ctx => { Console.WriteLine($"potwierdzil zamowienie {ctx.Message.CorrelationId}"); })
+				.Respond(ctx => { Console.WriteLine("respond 9"); return new Messages.AkceptacjaZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
+				//.Unschedule(Timeout)
 				.Finalize(),
 
 				When(BrakPotwierdzenia)
-				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"nie potwierdzil zamowienia {ctx.Message.CorrelationId}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
+				.Then(ctx => { Console.WriteLine($"nie potwierdzil zamowienia {ctx.Message.CorrelationId}"); })
+				.Respond(ctx => { Console.WriteLine("respond 10"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
+				//.Unschedule(Timeout)
 				.Finalize()
 				);
 
@@ -211,13 +215,11 @@ namespace Sklep {
 					 });
 				 sbc.ReceiveEndpoint("KolejkaSklep",
 					 x => x.StateMachineSaga(saga, rep));
-				 sbc.UseDelayedMessageScheduler();
+				 sbc.UseInMemoryScheduler();
 			 });
 			bus.Start();
 			Console.WriteLine("Sklep");
-			while(true) { }
-			Console.ReadKey();
-			bus.Stop();
+			while(true) { System.Threading.Thread.Sleep(1000); }
 		}
 	}
 }
