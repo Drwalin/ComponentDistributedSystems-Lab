@@ -9,21 +9,21 @@ using Messages;
 namespace Messages {
 	public interface IStartZamowienia {
 		int Ilosc { get; set; }
-		string Username { get; set; }
+		string Login { get; set; }
 	}
 	public class StartZamowienia : IStartZamowienia {
 		public int Ilosc { get; set; }
-		public string Username { get; set; }
+		public string Login { get; set; }
 	}
 
 	public interface IPytanieoPotwierdzenie : CorrelatedBy<Guid> {
 		int Ilosc { get; set; }
-		string Username { get; set; }
+		string Login { get; set; }
 	}
 	public class PytanieoPotwierdzenie : IPytanieoPotwierdzenie {
 		public int Ilosc { get; set; }
 		public Guid CorrelationId { get; set; }
-		public string Username { get; set; }
+		public string Login { get; set; }
 	}
 
 	public interface IPytanieoWolne : CorrelatedBy<Guid> {
@@ -36,22 +36,22 @@ namespace Messages {
 
 	public interface IAkceptacjaZamowienia : CorrelatedBy<Guid> {
 		int Ilosc { get; set; }
-		string Username { get; set; }
+		string Login { get; set; }
 	}
 	public class AkceptacjaZamowienia : IAkceptacjaZamowienia {
 		public int Ilosc { get; set; }
 		public Guid CorrelationId { get; set; }
-		public string Username { get; set; }
+		public string Login { get; set; }
 	}
 
 	public interface IOdrzucenieZamowienia : CorrelatedBy<Guid> {
 		int Ilosc { get; set; }
-		string Username { get; set; }
+		string Login { get; set; }
 	}
 	public class OdrzucenieZamowienia : IOdrzucenieZamowienia {
 		public int Ilosc { get; set; }
 		public Guid CorrelationId { get; set; }
-		public string Username { get; set; }
+		public string Login { get; set; }
 	}
 
 

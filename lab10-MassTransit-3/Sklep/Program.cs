@@ -8,21 +8,21 @@ using MassTransit;
 namespace Messages {
 	public interface IStartZamowienia {
 		int Ilosc { get; set; }
-		string Username { get; set; }
+		string Login { get; set; }
 	}
 	public class StartZamowienia : IStartZamowienia {
 		public int Ilosc { get; set; }
-		public string Username { get; set; }
+		public string Login { get; set; }
 	}
 
 	public interface IPytanieoPotwierdzenie : CorrelatedBy<Guid> {
 		int Ilosc { get; set; }
-		string Username { get; set; }
+		string Login { get; set; }
 	}
 	public class PytanieoPotwierdzenie : IPytanieoPotwierdzenie {
 		public int Ilosc { get; set; }
 		public Guid CorrelationId { get; set; }
-		public string Username { get; set; }
+		public string Login { get; set; }
 	}
 
 	public interface IPytanieoWolne : CorrelatedBy<Guid> {
@@ -35,22 +35,22 @@ namespace Messages {
 
 	public interface IAkceptacjaZamowienia : CorrelatedBy<Guid> {
 		int Ilosc { get; set; }
-		string Username { get; set; }
+		string Login { get; set; }
 	}
 	public class AkceptacjaZamowienia : IAkceptacjaZamowienia {
 		public int Ilosc { get; set; }
 		public Guid CorrelationId { get; set; }
-		public string Username { get; set; }
+		public string Login { get; set; }
 	}
 
 	public interface IOdrzucenieZamowienia : CorrelatedBy<Guid> {
 		int Ilosc { get; set; }
-		string Username { get; set; }
+		string Login { get; set; }
 	}
 	public class OdrzucenieZamowienia : IOdrzucenieZamowienia {
 		public int Ilosc { get; set; }
 		public Guid CorrelationId { get; set; }
-		public string Username { get; set; }
+		public string Login { get; set; }
 	}
 
 
@@ -96,7 +96,7 @@ namespace Sklep {
 		public Guid? CorrelectionIdNullable { get { return CorrelationId; } set { CorrelationId = value.Value; } }
 		public string CurrentState { get; set; }
 		public int Ilosc { get; set; }
-		public string Username { get; set; }
+		public string Login { get; set; }
 	}
 	public class RejestracjaSklep : MassTransitStateMachine<RejestracjaZamowienie> {
 		public State Niepotwierdzone { get; private set; }
@@ -116,8 +116,8 @@ namespace Sklep {
 
 			Event(() => StartZamowienia,
 				x => x.CorrelateBy(
-						s => s.Username,
-						ctx => ctx.Message.Username
+						s => s.Login,
+						ctx => { Console.WriteLine("CorrelateBy: ctx.Message.Login"); return ctx.Message.Login; }
 					).SelectId(ctx => { Console.WriteLine("Getting new guid"); return Guid.NewGuid(); })
 				);
 
@@ -128,11 +128,11 @@ namespace Sklep {
 
 			Initially(
 				When(StartZamowienia)
-				.Schedule(Timeout, ctx => { Console.WriteLine("Start zamowienie");  return new Messages.Timeout() { CorrelationId = ctx.Saga.CorrelationId }; })
-				.Then(ctx => ctx.Instance.Username = ctx.Data.Username)
+				.Schedule(Timeout, ctx => { Console.WriteLine("Start zamowienie timeout");  return new Messages.Timeout() { CorrelationId = ctx.Saga.CorrelationId }; })
+				.Then(ctx => ctx.Saga.Login = ctx.Message.Login)
 				.Then(ctx => ctx.Saga.Ilosc = ctx.Message.Ilosc)
 				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"zamowienie w ilosci {ctx.Message.Ilosc}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.PytanieoPotwierdzenie() { CorrelationId = ctx.Saga.CorrelationId, Username = ctx.Saga.Username }; })
+				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.PytanieoPotwierdzenie() { CorrelationId = ctx.Saga.CorrelationId, Login = ctx.Saga.Login }; })
 				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.PytanieoWolne() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc }; })
 				.TransitionTo(Niepotwierdzone)
 				);
@@ -140,7 +140,7 @@ namespace Sklep {
 			During(Niepotwierdzone,
 				When(TimeoutEvent)
 				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"TIMEOUT: na zamowienie {ctx.Message.CorrelationId}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Username = ctx.Saga.Username }; })
+				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
 				.Finalize(),
 
 				When(Potwierdzenie)
@@ -150,7 +150,7 @@ namespace Sklep {
 
 				When(BrakPotwierdzenia)
 				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($" nie potwierdzil zamowienia {ctx.Message.CorrelationId}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Username = ctx.Saga.Username }; })
+				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
 				.Finalize(),
 
 				When(OdpowiedzWolne)
@@ -178,18 +178,18 @@ namespace Sklep {
 			During(PotwierdzoneMagazyn,
 				When(TimeoutEvent)
 				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"TIMEOUT: na zamowienie {ctx.Message.CorrelationId}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Username = ctx.Saga.Username }; })
+				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
 				.Finalize(),
 
 				When(Potwierdzenie)
 				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"potwierdzil zamowienie {ctx.Message.CorrelationId}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.AkceptacjaZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Username = ctx.Saga.Username }; })
+				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.AkceptacjaZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
 				.Unschedule(Timeout)
 				.Finalize(),
 
 				When(BrakPotwierdzenia)
 				.ThenAsync(ctx => { return Console.Out.WriteLineAsync($"nie potwierdzil zamowienia {ctx.Message.CorrelationId}"); })
-				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Username = ctx.Saga.Username }; })
+				.Respond(ctx => { Console.WriteLine("respond"); return new Messages.OdrzucenieZamowienia() { CorrelationId = ctx.Saga.CorrelationId, Ilosc = ctx.Saga.Ilosc, Login = ctx.Saga.Login }; })
 				.Finalize()
 				);
 
@@ -215,6 +215,7 @@ namespace Sklep {
 			 });
 			bus.Start();
 			Console.WriteLine("Sklep");
+			while(true) { }
 			Console.ReadKey();
 			bus.Stop();
 		}
