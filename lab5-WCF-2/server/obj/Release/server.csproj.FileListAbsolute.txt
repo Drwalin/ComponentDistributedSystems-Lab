@@ -1,0 +1,14 @@
+C:\Studies\sem6\ksr\ksr-lab\lab5-WCF-2\server\bin\Release\server.exe.config
+C:\Studies\sem6\ksr\ksr-lab\lab5-WCF-2\server\bin\Release\server.exe
+C:\Studies\sem6\ksr\ksr-lab\lab5-WCF-2\server\bin\Release\server.pdb
+C:\Studies\sem6\ksr\ksr-lab\lab5-WCF-2\server\bin\Release\IZadanie1.dll
+C:\Studies\sem6\ksr\ksr-lab\lab5-WCF-2\server\bin\Release\IZadanie2.dll
+C:\Studies\sem6\ksr\ksr-lab\lab5-WCF-2\server\bin\Release\IZadanie3.dll
+C:\Studies\sem6\ksr\ksr-lab\lab5-WCF-2\server\bin\Release\IZadanie4.dll
+C:\Studies\sem6\ksr\ksr-lab\lab5-WCF-2\server\bin\Release\IZadanie5.dll
+C:\Studies\sem6\ksr\ksr-lab\lab5-WCF-2\server\bin\Release\IZadanie6.dll
+C:\Studies\sem6\ksr\ksr-lab\lab5-WCF-2\server\obj\Release\server.csprojAssemblyReference.cache
+C:\Studies\sem6\ksr\ksr-lab\lab5-WCF-2\server\obj\Release\server.csproj.CoreCompileInputs.cache
+C:\Studies\sem6\ksr\ksr-lab\lab5-WCF-2\server\obj\Release\server.csproj.CopyComplete
+C:\Studies\sem6\ksr\ksr-lab\lab5-WCF-2\server\obj\Release\server.exe
+C:\Studies\sem6\ksr\ksr-lab\lab5-WCF-2\server\obj\Release\server.pdb
