@@ -20,4 +20,9 @@ echo "done zad 3"
 
 docker run -d -p 91:80 --network=ksrlabbridge --name webapi_rel webapi
 
+cd LibrarySystem/Library.Web
+docker build -t web-ksr .
+docker run -p 80:80 -p 90:90 --network=ksrlabbridge --name web_rel web-ksr
+
+
 
