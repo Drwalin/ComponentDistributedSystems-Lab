@@ -1,9 +1,7 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build
 WORKDIR /home/LibrarySystem/Library.WebApi
-COPY ./* /home/LibrarySystem/Library.WebApi/
-#RUN ls -l /home/LibrarySystem/Library.WebApi
-#RUN rm -r /home/LibrarySystem/Library.WebApi/obj
-#RUN rm -r /home/LibrarySystem/Library.WebApi/bin
+COPY . /home/LibrarySystem/Library.WebApi
+RUN ls -l
 RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
